@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智信生日幸運遊戲機</title>
+<style>
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;overflow:hidden;
+  font-family:"Microsoft JhengHei",Arial,sans-serif;
+  color:#60331f;
+  background:linear-gradient(145deg,#fff1c8,#ffc3ad,#f27b7b);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(circle at top,rgba(255,255,255,.55),transparent 45%),
+             radial-gradient(circle at bottom,rgba(95,37,20,.18),transparent 60%);
+}
+.page{
+  display:none;position:relative;width:100vw;height:100vh;
+  padding:22px 16px;align-items:center;justify-content:center;text-align:center;
+}
+.page.active{display:flex;animation:fade .5s ease}
+@keyframes fade{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+.card{
+  width:min(94vw,420px);max-height:94vh;overflow:auto;
+  padding:22px 18px;border-radius:30px;
+  background:rgba(255,255,255,.48);
+  border:1px solid rgba(255,255,255,.65);
+  box-shadow:0 20px 45px rgba(91,43,21,.25);
+  backdrop-filter:blur(12px);
+}
+h1{font-size:28px;color:#7d2f25;margin:10px 0 14px}
+p{font-size:16px;line-height:1.75;margin:8px 0}
+button{
+  border:0;border-radius:999px;padding:14px 26px;margin-top:16px;
+  font-size:17px;font-weight:900;color:#66351f;
+  background:linear-gradient(135deg,#fff5b5,#f6bd4a,#fff1a4);
+  box-shadow:0 8px 0 #b36b2e,0 16px 28px rgba(82,39,18,.25);
+}
+button:active{transform:translateY(5px);box-shadow:0 3px 0 #b36b2e}
+button:disabled{opacity:.6}
+.hidden{display:none!important}
+
+.decor span{
+  position:fixed;pointer-events:none;z-index:0;
+  animation:fall linear infinite;
+}
+@keyframes fall{
+  from{transform:translateY(-10vh) rotate(0);opacity:0}
+  20%{opacity:1}
+  to{transform:translateY(110vh) rotate(360deg);opacity:.2}
+}
+
+.slot-machine{
+  width:100%;max-width:340px;margin:0 auto 16px;padding:18px 14px 24px;
+  border-radius:34px;position:relative;
+  background:linear-gradient(160deg,#b82f37,#ff7d68 55%,#8e252c);
+  border:8px solid #f7c85f;
+  box-shadow:0 20px 38px rgba(83,36,20,.36),inset 0 0 28px rgba(255,255,255,.22);
+}
+.lights{display:flex;justify-content:space-around;margin-bottom:12px}
+.lights span{
+  width:12px;height:12px;border-radius:50%;background:#fff6b8;
+  box-shadow:0 0 14px #fff;animation:blink .65s infinite alternate;
+}
+@keyframes blink{to{opacity:.35;transform:scale(.75)}}
+.slot-title{font-size:15px;font-weight:900;color:#fff7c8;margin-bottom:10px}
+.reels{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  padding:10px;border-radius:22px;background:#6b2e25;border:5px solid #fff0a2;
+}
+.reel{
+  height:122px;border-radius:16px;background:#fff8ec;border:4px solid #fff;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
+.reel img{
+  width:82px;height:98px;object-fit:cover;border-radius:8px;
+  background:#fff;border:6px solid white;box-shadow:0 8px 16px rgba(0,0,0,.18);
+}
+.reel.spinning img{animation:spinReel .07s linear infinite}
+@keyframes spinReel{
+  from{transform:translateY(-18px) scale(.95);filter:blur(1px)}
+  to{transform:translateY(20px) scale(1.04);filter:blur(2px)}
+}
+.handle{
+  position:absolute;right:-30px;top:86px;width:20px;height:92px;
+  background:#6f2d23;border-radius:20px;
+}
+.handle:before{
+  content:"";position:absolute;top:-25px;left:-14px;width:48px;height:48px;
+  border-radius:50%;background:linear-gradient(#fff3aa,#f6b741);border:4px solid #7b2f24;
+}
+.win-glow{animation:winGlow .35s ease infinite alternate}
+@keyframes winGlow{to{filter:drop-shadow(0 0 24px #fff7a8) brightness(1.2);transform:scale(1.015)}}
+.status{margin:10px 0;font-size:17px;font-weight:900;color:#7b2f24}
+.coin-row{font-size:28px;letter-spacing:2px;margin:12px 0}
+
+.gacha{
+  width:280px;height:310px;margin:0 auto 18px;position:relative;border-radius:36px;
+  background:linear-gradient(160deg,#c83f3f,#ff806c 52%,#9d2f32);
+  border:8px solid #f7c85f;box-shadow:0 20px 42px rgba(83,36,20,.34);
+}
+.gacha-glass{
+  position:absolute;top:25px;left:50%;transform:translateX(-50%);
+  width:190px;height:155px;border-radius:95px 95px 38px 38px;
+  background:rgba(255,255,255,.45);border:6px solid #fff4bd;
+}
+.gacha-glass:before{
+  content:"🔴 🟡 🟠 🟣 🔵 🟢";position:absolute;width:160px;left:14px;top:55px;
+  font-size:24px;line-height:1.5;
+}
+.gacha-body{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  width:185px;height:120px;border-radius:30px;background:linear-gradient(#ff7665,#bd3232);
+  border:5px solid #fff0a2;
+}
+.knob{
+  position:absolute;bottom:69px;left:50%;transform:translateX(-50%);
+  width:72px;height:72px;border-radius:50%;background:linear-gradient(#fff5b0,#f6ba44);
+  border:6px solid #7b2f24;z-index:3;
+}
+.gacha.spin .knob{animation:rotate .45s linear infinite}
+@keyframes rotate{to{transform:translateX(-50%) rotate(360deg)}}
+.capsule{
+  width:82px;height:82px;margin:16px auto 4px;border-radius:50%;
+  background:linear-gradient(90deg,#ff7979 0 50%,#fff2a8 50% 100%);
+  border:6px solid #fff;box-shadow:0 12px 24px rgba(0,0,0,.2);
+  cursor:pointer;animation:bounce .8s ease-in-out infinite alternate;
+}
+@keyframes bounce{to{transform:translateY(-10px)}}
+.capsule.open{animation:crack .7s ease forwards}
+@keyframes crack{
+  35%{transform:rotate(10deg) scale(1.15)}
+  70%{transform:rotate(-12deg) scale(1.2)}
+  100%{transform:scale(0);opacity:0}
+}
+.gift-card{
+  display:none;padding:16px 12px;border-radius:24px;
+  background:rgba(255,255,255,.62);box-shadow:0 18px 36px rgba(92,44,23,.18);
+}
+.gift-card.show{display:block;animation:slideUp .55s ease both}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+.album{
+  width:300px;height:240px;margin:0 auto 14px;position:relative;
+}
+.memory-photo{
+  position:absolute;left:50%;top:50%;width:220px;padding:10px 10px 32px;
+  background:#fffaf0;border-radius:5px;box-shadow:0 14px 28px rgba(73,35,18,.25);
+  transform:translate(-50%,-50%) rotate(-3deg);
+}
+.memory-photo img{width:100%;height:150px;object-fit:cover;border-radius:4px}
+.memory-photo span{position:absolute;left:0;right:0;bottom:8px;font-size:13px;color:#8a5a3c}
+.polaroid{
+  position:absolute;right:10px;top:68px;z-index:4;width:112px;padding:8px 8px 25px;
+  background:#fffaf0;border-radius:5px;box-shadow:0 13px 28px rgba(73,35,18,.26);
+  transform:rotate(7deg);animation:polaroidFloat 3.5s ease-in-out infinite;
+}
+.polaroid img{width:100%;height:92px;object-fit:cover;border-radius:3px}
+.polaroid span{position:absolute;left:0;right:0;bottom:6px;font-size:12px;color:#8a5a3c}
+@keyframes polaroidFloat{
+  0%,100%{transform:rotate(7deg) translateY(0)}
+  50%{transform:rotate(4deg) translateY(-12px)}
+}
+.confetti{
+  position:fixed;width:8px;height:14px;z-index:10;pointer-events:none;
+}
+@keyframes confettiFly{
+  to{transform:translate(var(--x),var(--y)) rotate(760deg);opacity:0}
+}
+.toast{
+  position:fixed;left:50%;top:24px;transform:translateX(-50%) translateY(-80px);
+  z-index:50;width:min(90vw,340px);padding:12px 16px;border-radius:18px;
+  color:#6b351f;font-weight:900;background:linear-gradient(135deg,#fff7c7,#f7c85f);
+  box-shadow:0 12px 28px rgba(72,34,14,.22);opacity:0;
+}
+.toast.show{animation:toast 2.1s ease forwards}
+@keyframes toast{
+  10%,80%{opacity:1;transform:translateX(-50%) translateY(0)}
+  100%{opacity:0;transform:translateX(-50%) translateY(-80px)}
+}
+</style>
+</head>
+
+<body>
+<div class="decor" id="decor"></div>
+<div id="toast" class="toast"></div>
+
+<section id="loading" class="page active">
+  <div class="card">
+    <h1>🎂 智信生日幸運遊戲機</h1>
+    <p>Loading... 正在準備生日驚喜</p>
+  </div>
+</section>
+
+<section id="intro" class="page">
+  <div class="card">
+    <div class="slot-machine">
+      <div class="lights"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="slot-title">LUCKY BIRTHDAY SLOT</div>
+      <div class="reels">
+        <div class="reel"><img src="slot1.jpg"></div>
+        <div class="reel"><img src="slot2.jpg"></div>
+        <div class="reel"><img src="target.jpg"></div>
+      </div>
+      <div class="handle"></div>
+    </div>
+    <h1>🎉 Happy Birthday 智信！</h1>
+    <p>今天是你的生日，<br>維柔準備了一點小驚喜。</p>
+    <p>想抽生日禮物之前，<br>你必須先完成幸運拉霸挑戰。</p>
+    <p>只要成功拉出今天的幸運照片，<br>就能獲得 🪙×5 生日金幣！</p>
+    <button onclick="go('slot')">開始挑戰</button>
+  </div>
+</section>
+
+<section id="slot" class="page">
+  <div class="card">
+    <div id="slotMachine" class="slot-machine">
+      <div class="lights"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="slot-title">三格都是幸運照片才中獎</div>
+      <div class="reels">
+        <div class="reel" id="reelBox1"><img id="reel1" src="slot1.jpg"></div>
+        <div class="reel" id="reelBox2"><img id="reel2" src="slot2.jpg"></div>
+        <div class="reel" id="reelBox3"><img id="reel3" src="slot3.jpg"></div>
+      </div>
+      <div class="handle"></div>
+    </div>
+    <div id="slotStatus" class="status">🎰 剩餘次數：5</div>
+    <p id="slotMsg">拉到三張一樣的幸運照片，就能獲得生日金幣！</p>
+    <button id="spinBtn" onclick="spinSlot()">拉一下！</button>
+    <button id="toGachaBtn" class="hidden" onclick="go('gachaIntro')">前往扭蛋機</button>
+  </div>
+</section>
+
+<section id="gachaIntro" class="page">
+  <div class="card">
+    <div class="gacha">
+      <div class="gacha-glass"></div>
+      <div class="gacha-body"></div>
+      <div class="knob"></div>
+    </div>
+    <h1>金幣已解鎖！</h1>
+    <div class="coin-row">🪙🪙🪙🪙🪙</div>
+    <p>恭喜！<br>可以開始抽生日禮物了。</p>
+    <button onclick="go('gachaGame')">開始抽扭蛋</button>
+  </div>
+</section>
+
+<section id="gachaGame" class="page">
+  <div class="card">
+    <div id="gachaMachine" class="gacha">
+      <div class="gacha-glass"></div>
+      <div class="gacha-body"></div>
+      <div class="knob"></div>
+    </div>
+    <div id="coinStatus" class="status"></div>
+    <div id="collectStatus">🎁 禮物收藏 0/5</div>
+    <button id="coinBtn" onclick="dropCapsule()">投入金幣</button>
+
+    <div id="capsuleArea" class="hidden">
+      <p>點擊扭蛋打開禮物！</p>
+      <div id="capsule" class="capsule" onclick="openGift()"></div>
+    </div>
+
+    <div id="giftCard" class="gift-card">
+      <h1 id="giftTitle"></h1>
+      <p><b>恭喜獲得！</b></p>
+      <p id="giftDesc"></p>
+      <button onclick="acceptGift()">收下</button>
+    </div>
+  </div>
+</section>
+
+<section id="memory" class="page">
+  <div class="card">
+    <h1>回憶相簿 📖</h1>
+    <div class="album">
+      <div class="memory-photo">
+        <img id="memoryImg" src="memory1.jpg" alt="memory">
+        <span id="memoryText">Memory 1</span>
+      </div>
+    </div>
+    <p>把今天的小驚喜，<br>也收進我們的回憶裡。</p>
+  </div>
+</section>
+
+<section id="final" class="page">
+  <div class="polaroid">
+    <img src="couple.jpg" alt="合照">
+    <span>Our Memory ♡</span>
+  </div>
+  <div class="card">
+    <h1>信信，生日快樂 ❤️</h1>
+    <p>希望今天這個小遊戲，<br>能讓你玩得開心，<br>也為你的生日增添一點驚喜！</p>
+    <p>祝你生日快樂、身體健康，<br>每天都平安順心。</p>
+    <p>謝謝你一直以來的陪伴與照顧。</p>
+    <p><b>—— 維柔 ❤️</b></p>
+  </div>
+</section>
+
+<script>
+const CONFIG = {
+  slotImages:["slot1.jpg","slot2.jpg","slot3.jpg","slot4.jpg","slot5.jpg","target.jpg"],
+  targetImage:"target.jpg",
+  maxSlotTries:5,
+  coins:5,
+  memoryImages:["memory1.jpg","memory2.jpg","memory3.jpg","memory4.jpg","memory5.jpg"],
+  gifts:[
+    {title:"🍺 一手啤酒",desc:"維柔送你一手啤酒。今天就好好放鬆一下！"},
+    {title:"🍽️ 一頓大餐",desc:"維柔請你去吃一頓大餐，想吃什麼你決定。"},
+    {title:"💆 免費按摩 10 分鐘",desc:"恭喜獲得維柔限定按摩服務，時間 10 分鐘。"},
+    {title:"🍻 酒精之旅",desc:"維柔載你去酒精之旅，負責開車，讓你安心享受。"},
+    {title:"🐠 維柔買魚給你養",desc:"恭喜獲得可愛觀賞魚一隻，讓生活多一點療癒感。"},
+    {title:"✈️ 出國任務卡",desc:"命運指定：智信帶維柔出國一次。"},
+    {title:"👜 包包任務卡",desc:"命運指定：智信送維柔一個包包。"},
+    {title:"💌 紅包任務卡",desc:"命運指定：智信包紅包給維柔。"},
+    {title:"🍲 請吃飯任務卡",desc:"命運指定：智信請維柔吃一餐。"}
+  ]
+};
+
+let slotTries = CONFIG.maxSlotTries;
+let slotWon = false;
+let coins = CONFIG.coins;
+let collected = 0;
+let giftPool = shuffle([...CONFIG.gifts]).slice(0, CONFIG.coins);
+let currentGift = null;
+let audioCtx = null;
+
+window.onload = function(){
+  setupImageFallbacks();
+  createDecor();
+  updateCoins();
+  setTimeout(()=>go("intro"),1200);
+};
+
+function setupImageFallbacks(){
+  document.querySelectorAll("img").forEach(img=>{
+    img.onerror = function(){
+      this.onerror = null;
+      this.src = makeFallback(this.getAttribute("src") || "照片");
+    };
+  });
+}
+
+function makeFallback(text){
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="360">
+    <rect width="100%" height="100%" rx="24" fill="#fff4d6"/>
+    <text x="50%" y="46%" text-anchor="middle" font-size="28" fill="#8a4a2c">📷</text>
+    <text x="50%" y="58%" text-anchor="middle" font-size="22" fill="#8a4a2c">${text}</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+
+function go(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if(id==="memory") playMemoryAlbum();
+  if(id==="final") burstConfetti();
+}
+
+function spinSlot(){
+  if(slotWon || slotTries<=0) return;
+
+  const spinBtn = document.getElementById("spinBtn");
+  const machine = document.getElementById("slotMachine");
+  const reelBoxes = [reelBox1,reelBox2,reelBox3];
+  const reelImgs = [reel1,reel2,reel3];
+
+  spinBtn.disabled = true;
+  sound(180);
+  machine.classList.add("win-glow");
+  reelBoxes.forEach(b=>b.classList.add("spinning"));
+
+  const timers = reelImgs.map((img,idx)=>setInterval(()=>{
+    img.src = randomItem(CONFIG.slotImages);
+  },70 + idx*12));
+
+  slotTries--;
+  const forceWin = slotTries === 0;
+  const naturalWin = Math.random() < 0.2;
+  const shouldWin = forceWin || naturalWin;
+
+  const results = shouldWin
+    ? [CONFIG.targetImage,CONFIG.targetImage,CONFIG.targetImage]
+    : generateLoseResult();
+
+  stopReel(0,1000,results,timers,reelBoxes,reelImgs);
+  stopReel(1,1350,results,timers,reelBoxes,reelImgs);
+  stopReel(2,1700,results,timers,reelBoxes,reelImgs,()=>{
+    machine.classList.remove("win-glow");
+    slotStatus.textContent = `🎰 剩餘次數：${slotTries}`;
+    const isWin = results.every(x=>x===CONFIG.targetImage);
+
+    if(isWin){
+      slotWon = true;
+      sound(900);
+      machine.classList.add("win-glow");
+      burstConfetti();
+      slotMsg.innerHTML = "🎉 恭喜！<br>成功拉中今天的幸運照片！<br><br><span style='font-size:28px'>🪙🪙🪙🪙🪙</span><br><b>生日金幣 ×5</b>";
+      spinBtn.classList.add("hidden");
+      toGachaBtn.classList.remove("hidden");
+      toast("🎉 挑戰成功！");
+    }else{
+      sound(240);
+      slotMsg.innerHTML = "差一點點！<br>幸運快來了～";
+      spinBtn.disabled = false;
+    }
+  });
+}
+
+function stopReel(index,delay,results,timers,reelBoxes,reelImgs,callback){
+  setTimeout(()=>{
+    clearInterval(timers[index]);
+    reelBoxes[index].classList.remove("spinning");
+    reelImgs[index].src = results[index];
+    if(callback) callback();
+  },delay);
+}
+
+function generateLoseResult(){
+  let r;
+  do{
+    r = [randomItem(CONFIG.slotImages),randomItem(CONFIG.slotImages),randomItem(CONFIG.slotImages)];
+  }while(r.every(x=>x===CONFIG.targetImage));
+  return r;
+}
+
+function dropCapsule(){
+  if(coins<=0) return;
+  sound(600);
+  coins--;
+  updateCoins();
+  coinBtn.classList.add("hidden");
+  gachaMachine.classList.add("spin");
+  setTimeout(()=>{
+    gachaMachine.classList.remove("spin");
+    capsuleArea.classList.remove("hidden");
+  },900);
+}
+
+function openGift(){
+  capsule.classList.add("open");
+  sound(760);
+  currentGift = giftPool.shift();
+  setTimeout(()=>{
+    capsuleArea.classList.add("hidden");
+    giftTitle.textContent = currentGift.title;
+    giftDesc.textContent = currentGift.desc;
+    giftCard.classList.add("show");
+    burstConfetti();
+  },720);
+}
+
+function acceptGift(){
+  collected++;
+  updateCoins();
+  giftCard.classList.remove("show");
+  capsule.classList.remove("open");
+
+  if(coins<=0){
+    setTimeout(()=>go("memory"),700);
+  }else{
+    coinBtn.classList.remove("hidden");
+  }
+}
+
+function updateCoins(){
+  if(document.getElementById("coinStatus")){
+    coinStatus.textContent = "剩餘金幣：" + ("🪙".repeat(coins) || "0");
+  }
+  if(document.getElementById("collectStatus")){
+    collectStatus.textContent = `🎁 禮物收藏 ${collected}/${CONFIG.coins}`;
+  }
+}
+
+function playMemoryAlbum(){
+  let index = 0;
+  memoryImg.src = CONFIG.memoryImages[0];
+  memoryText.textContent = "Memory 1";
+  const timer = setInterval(()=>{
+    index++;
+    if(index >= CONFIG.memoryImages.length){
+      clearInterval(timer);
+      setTimeout(()=>go("final"),1000);
+      return;
+    }
+    memoryImg.style.opacity = "0";
+    setTimeout(()=>{
+      memoryImg.src = CONFIG.memoryImages[index];
+      memoryText.textContent = `Memory ${index+1}`;
+      memoryImg.style.opacity = "1";
+    },250);
+  },1800);
+}
+
+function createDecor(){
+  for(let i=0;i<30;i++){
+    const s = document.createElement("span");
+    s.textContent = ["✨","🎊","⭐","💛"][i%4];
+    s.style.left = Math.random()*100+"vw";
+    s.style.top = "-30px";
+    s.style.animationDuration = (4+Math.random()*5)+"s";
+    s.style.animationDelay = Math.random()*5+"s";
+    document.getElementById("decor").appendChild(s);
+  }
+}
+
+function burstConfetti(){
+  for(let i=0;i<34;i++){
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = "50vw";
+    c.style.top = "46vh";
+    c.style.background = ["#fff1a8","#ff7c7c","#f6c65b","#ffffff","#ffb56b"][i%5];
+    c.style.animation = "confettiFly .95s ease-out forwards";
+    c.style.setProperty("--x",(Math.random()*280-140)+"px");
+    c.style.setProperty("--y",(Math.random()*-260-40)+"px");
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),1000);
+  }
+}
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.remove("show");
+  void t.offsetWidth;
+  t.classList.add("show");
+}
+
+function sound(freq){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    osc.frequency.setValueAtTime(freq,now);
+    gain.gain.setValueAtTime(.06,now);
+    gain.gain.exponentialRampToValueAtTime(.001,now+.2);
+    osc.start(now);
+    osc.stop(now+.22);
+  }catch(e){}
+}
+
+function randomItem(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+</script>
+</body>
+</html>
