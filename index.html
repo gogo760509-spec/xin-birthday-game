@@ -120,7 +120,7 @@
         .game-status-bar { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 0.9rem; color: #666; font-weight: bold; }
         .hint-text { font-size: 0.95rem; min-height: 24px; color: #E67E22; margin-bottom: 15px; font-weight: bold; }
 
-        /* --- 🔮 迪士尼經典立體扭蛋機 UI 升級版 --- */
+        /* --- 🔮 迪士尼經典立體扭蛋機 UI --- */
         .gacha-machine-wrapper {
             width: 100%;
             display: flex;
@@ -128,10 +128,9 @@
             align-items: center;
             position: relative;
             margin-bottom: 15px;
-            padding-bottom: 70px; /* 預留大扭蛋掉落空間 */
+            padding-bottom: 70px;
         }
 
-        /* 上方透明大圓球 */
         .gacha-globe {
             width: 180px;
             height: 180px;
@@ -144,7 +143,6 @@
             overflow: hidden;
         }
 
-        /* 扭蛋球玻璃高光 */
         .gacha-globe::after {
             content: '';
             position: absolute;
@@ -155,7 +153,6 @@
             transform: rotate(-30deg);
         }
 
-        /* 扭蛋池：讓扭蛋球隨機散落堆疊 */
         .gacha-ball-pool {
             position: absolute;
             width: 100%;
@@ -172,7 +169,6 @@
             box-shadow: inset -2px -2px 4px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.1);
         }
 
-        /* 下方胖胖轉蛋機底座 */
         .gacha-base {
             width: 150px;
             height: 110px;
@@ -180,7 +176,7 @@
             border: 4px solid #FFF;
             border-top: none;
             border-radius: 0 0 40px 40px / 0 0 25px 25px;
-            margin-top: -25px; /* 與圓球完美拼接合 */
+            margin-top: -25px;
             position: relative;
             z-index: 2;
             box-shadow: 0 10px 20px rgba(255,112,67,0.2);
@@ -189,7 +185,6 @@
             align-items: center;
         }
 
-        /* 旋鈕外框金色裝飾 */
         .crank-housing {
             width: 65px; height: 65px;
             background: #FFF;
@@ -216,7 +211,6 @@
         }
         .crank-rotate { transform: rotate(360deg); }
         
-        /* 扭蛋出口 */
         .gacha-exit { 
             width: 44px; height: 32px; 
             background: #424242; 
@@ -227,7 +221,6 @@
             box-shadow: inset 0 3px 5px rgba(0,0,0,0.3);
         }
 
-        /* 掉落出來的大扭蛋 */
         .spawned-capsule { 
             width: 55px; height: 55px; 
             border-radius: 50%; 
@@ -273,358 +266,3 @@
         @keyframes fadeInScene { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
         @keyframes bounceLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
         @keyframes bulbBlink { 0% { opacity: 0.4; } 100% { opacity: 1; filter: drop-shadow(0 0 4px #FFF59D); } }
-        .shake-effect { animation: machineShake 0.1s infinite; }
-        @keyframes machineShake { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2px, 2px); } }
-        .zoom-slow-effect { transform: scale(1.04) !important; transition: transform 1.2s ease !important; }
-        .capsule-shake-effect { animation: machineShake 0.15s infinite; }
-        @keyframes dropCapsule { 0% { bottom: 65px; transform: scale(0.4) rotate(0deg); } 100% { bottom: 12px; transform: scale(1) rotate(360deg); } }
-    </style>
-</head>
-<body>
-
-    <div class="game-container">
-        <div class="particles" id="particle-container"></div>
-
-        <div id="loading-screen">
-            <div class="loading-logo">🎂</div>
-            <div class="loading-title">智信生日幸運遊戲機</div>
-            <div class="loading-sub">Loading...</div>
-            <div class="progress-container"><div class="progress-bar"></div></div>
-        </div>
-
-        <div id="intro-scene" class="scene active">
-            <div class="glass-card">
-                <h2 class="scene-title">🎉 Happy Birthday 智信！</h2>
-                <p class="story-text">
-                    今天是你的生日，<br>
-                    維柔準備了一點小驚喜。<br><br>
-                    想抽生日禮物之前，<br>
-                    你必須先完成幸運拉霸挑戰。<br><br>
-                    只要成功拉出今天的幸運照片，<br>
-                    就能獲得 <span class="highlight-gold">🪙五枚生日金幣</span>！
-                </p>
-                <button class="btn-premium" onclick="switchScene('intro-scene', 'slot-scene'); initReels();">開始挑戰 ➔</button>
-            </div>
-        </div>
-
-        <div id="slot-scene" class="scene">
-            <div class="glass-card" id="slot-card-target">
-                <h2 class="scene-title">🎰 幸運拉霸挑戰</h2>
-                <div class="slot-machine-frame" id="machine-frame">
-                    <div class="marquee-bulbs">
-                        <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
-                        <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
-                    </div>
-                    <div class="slots-container">
-                        <div class="slot-window"><div class="slot-reel" id="reel-0"></div></div>
-                        <div class="slot-window"><div class="slot-reel" id="reel-1"></div></div>
-                        <div class="slot-window"><div class="slot-reel" id="reel-2"></div></div>
-                    </div>
-                </div>
-                <div class="game-status-bar">
-                    <span>🎰 剩餘：<span id="attempts-left" class="highlight-gold">5</span> 次</span>
-                    <span>🏆 成就：<span id="slot-achievement" style="color:#2ECC71">未解鎖</span></span>
-                </div>
-                <div class="hint-text" id="slot-hint">點擊按鈕，試試好運！</div>
-                <button class="btn-premium" id="spin-btn" onclick="spinSlots()">拉一下！</button>
-            </div>
-        </div>
-
-        <div id="gacha-scene" class="scene">
-            <div class="glass-card">
-                <h2 class="scene-title">🔮 夢幻生日扭蛋機</h2>
-                
-                <div class="gacha-machine-wrapper" id="gacha-machine-box">
-                    <div class="gacha-globe">
-                        <div class="gacha-ball-pool" id="gacha-pool">
-                            </div>
-                    </div>
-                    <div class="gacha-base">
-                        <div class="crank-housing">
-                            <div class="gacha-crank" id="gacha-crank-btn" onclick="turnGachaCrank()">🌀</div>
-                        </div>
-                        <div class="gacha-exit"></div>
-                    </div>
-                    <div class="spawned-capsule" id="spawned-ball" onclick="openCapsule()"></div>
-                </div>
-
-                <div class="game-status-bar">
-                    <span>🪙 金幣：<span id="player-coins" class="highlight-gold">0</span> 枚</span>
-                    <span>🎁 收藏：<span id="gift-count" class="highlight-gold">0 / 5</span></span>
-                </div>
-                <div class="hint-text" id="gacha-hint">點擊 🌀 旋鈕投入金幣扭蛋！</div>
-                <button class="btn-premium" id="next-phase-btn" style="display:none;" onclick="startAlbumPhase()">觀看回憶相簿 ➔</button>
-            </div>
-        </div>
-
-        <div id="album-scene" class="scene">
-            <div class="glass-card">
-                <h2 class="scene-title">📸 我們的甜蜜回憶</h2>
-                <div class="album-book" id="album-book-container">
-                    </div>
-                <div class="hint-text" style="color:#888;" id="album-hint">回憶點滴翻閱中...</div>
-            </div>
-        </div>
-
-        <div id="bless-scene" class="scene">
-            <div class="glass-card" style="padding: 20px 15px;">
-                <div class="bless-photo-aside" id="bless-photo-box"></div>
-                <h2 class="scene-title" style="color:#E67E22; margin-bottom: 8px;">信信，生日快樂 ❤️</h2>
-                <p class="story-text" style="font-size: 0.88rem; line-height: 1.6; text-align: left; margin-bottom: 0; background: rgba(255,255,255,0.5); padding: 12px; border-radius: 16px;">
-                    希望今天這個小遊戲，<br>
-                    能讓你玩得開心，也為你的生日增添一點驚喜！<br>
-                    祝你生日快樂、身體健康，每天都平安順心。<br>
-                    謝謝你一直以來的陪伴與照顧。<br><br>
-                    <span style="display:block; text-align:right; font-weight:bold; color:#E67E22;">—— 維柔 ❤️</span>
-                </p>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="gift-overlay" id="gift-modal">
-        <div class="gift-card">
-            <div class="gift-emoji" id="modal-emoji">❤️</div>
-            <div class="gift-name" id="modal-name">維柔送智信</div>
-            <div class="gift-desc" id="modal-desc">說明文字</div>
-            <button class="btn-premium" style="width:100%" onclick="closeGiftModal()">收下禮物</button>
-        </div>
-    </div>
-
-    <script>
-        const CONFIG = {
-            slotImages: ["slot1.jpg", "slot2.jpg", "slot3.jpg", "slot4.jpg", "slot5.jpg", "target.jpg"],
-            memoryImages: ["memory1.jpg", "memory2.jpg"],
-            coupleImage: "couple.jpg",
-            giftPool: [
-                { emoji: "❤️", name: "維柔送智信", desc: "超特權卡！可以對維柔許下任意一個生日願望！" },
-                { emoji: "🍺", name: "一手啤酒", desc: "下班放鬆首選！維柔贊助你最愛喝的精釀啤酒一手！" },
-                { emoji: "🍽️", name: "一頓大餐", desc: "帶你去吃精緻美食，今天想吃什麼全由你指定！" },
-                { emoji: "💆", name: "免費按摩 10 分鐘", desc: "辛苦啦！憑此卡即可兌換維柔專屬溫柔舒壓搥背服務。" },
-                { emoji: "🍻", name: "酒精之旅", desc: "今晚放心喝到飽！維柔全程擔任你的專屬貼心安全駕駛！" },
-                { emoji: "🐠", name: "維柔買魚給你養", desc: "水族愛好者福利！維柔出資陪你一起挑選新魚寶貝入缸！" }
-            ]
-        };
-
-        const fallbackEmojis = ["🍓", "🍒", "🍇", "🍊", "🍋", "💎"];
-        const capsuleColors = [
-            "linear-gradient(to bottom, #FF8A80 50%, #FFF 50%)",
-            "linear-gradient(to bottom, #80D8FF 50%, #FFF 50%)",
-            "linear-gradient(to bottom, #B9F6CA 50%, #FFF 50%)",
-            "linear-gradient(to bottom, #FFE082 50%, #FFF 50%)",
-            "linear-gradient(to bottom, #EA80FC 50%, #FFF 50%)"
-        ];
-
-        let currentAttempts = 5, isSpinning = false, playerCoins = 0, collectedGiftsCount = 0;
-        let currentGiftPool = [...CONFIG.giftPool];
-
-        function switchScene(fromId, toId) {
-            document.getElementById(fromId).classList.remove('active');
-            setTimeout(() => {
-                document.getElementById(fromId).style.display = 'none';
-                const toScene = document.getElementById(toId);
-                toScene.style.display = 'block';
-                setTimeout(() => toScene.classList.add('active'), 50);
-                if (toId === 'gacha-scene') {
-                    initGachaPool();
-                }
-            }, 500);
-        }
-
-        // --- 拉霸控制 ---
-        function initReels() {
-            for (let r = 0; r < 3; r++) {
-                const reel = document.getElementById(`reel-${r}`);
-                reel.innerHTML = '';
-                for (let i = 0; i < 20; i++) {
-                    const idx = i % CONFIG.slotImages.length;
-                    const item = document.createElement('div');
-                    item.classList.add('slot-item');
-                    const img = document.createElement('img');
-                    img.src = CONFIG.slotImages[idx];
-                    img.onerror = function() {
-                        this.style.display = 'none';
-                        const p = document.createElement('div'); p.classList.add('slot-placeholder'); p.innerText = fallbackEmojis[idx];
-                        item.appendChild(p);
-                    };
-                    item.appendChild(img); reel.appendChild(item);
-                }
-            }
-        }
-
-        function spinSlots() {
-            if (isSpinning || currentAttempts <= 0) return;
-            isSpinning = true; currentAttempts--;
-            document.getElementById('attempts-left').innerText = currentAttempts;
-            document.getElementById('slot-hint').innerText = "🎰 命運轉輪高速旋轉中...";
-            document.getElementById('spin-btn').disabled = true;
-            document.getElementById('machine-frame').classList.add('shake-effect');
-
-            const isWin = (currentAttempts === 0) || (Math.random() < 0.1);
-            let finalIdx = isWin ? [5, 5, 5] : [Math.floor(Math.random()*5), Math.floor(Math.random()*5), Math.floor(Math.random()*5)];
-            if(!isWin && finalIdx[0] === finalIdx[1] && finalIdx[1] === finalIdx[2]) finalIdx[2] = (finalIdx[2] + 1) % 5;
-
-            const stopDelays = [1400, 1700, 2000];
-            for (let r = 0; r < 3; r++) {
-                const reel = document.getElementById(`reel-${r}`);
-                reel.style.transition = `transform ${stopDelays[r] / 1000}s cubic-bezier(0.25, 1, 0.5, 1)`;
-                reel.style.transform = `translateY(-${(12 + finalIdx[r]) * 92}px)`;
-            }
-
-            setTimeout(() => {
-                document.getElementById('machine-frame').classList.remove('shake-effect');
-                if (isWin) {
-                    document.getElementById('slot-hint').innerText = "🎉 太棒了！拉中幸運照片！";
-                    document.getElementById('slot-achievement').innerText = "🎉 挑戰成功！";
-                    document.getElementById('slot-card-target').classList.add('zoom-slow-effect');
-                    playerCoins = 5;
-                    setTimeout(() => {
-                        document.getElementById('player-coins').innerText = playerCoins;
-                        switchScene('slot-scene', 'gacha-scene');
-                    }, 1500);
-                } else {
-                    isSpinning = false; document.getElementById('spin-btn').disabled = false;
-                    document.getElementById('slot-hint').innerText = "❌ 差一點點！幸運快來了～";
-                }
-            }, 2100);
-        }
-
-        // --- 🔮 扭蛋球初始化：隨機散落分布 ---
-        function initGachaPool() {
-            const pool = document.getElementById('gacha-pool');
-            pool.innerHTML = '';
-            // 放 12 顆隨機彩色小轉蛋在玻璃球底部，看起來超豐盛
-            for (let i = 0; i < 12; i++) {
-                const capsule = document.createElement('div');
-                capsule.classList.add('gacha-capsule');
-                capsule.style.background = capsuleColors[i % capsuleColors.length];
-                
-                // 計算圓形玻璃球內的隨機分布（偏下方堆疊）
-                const randomLeft = Math.random() * 110 + 25; // 25px 到 135px 之間
-                const randomTop = Math.random() * 40 + 100;   // 100px 到 140px 之間，集中在底部
-                const randomRotate = Math.random() * 360;
-
-                capsule.style.left = `${randomLeft}px`;
-                capsule.style.top = `${randomTop}px`;
-                capsule.style.transform = `rotate(${randomRotate}deg)`;
-                pool.appendChild(capsule);
-            }
-        }
-
-        // --- 扭蛋控制 ---
-        let isGachaCranking = false;
-        function turnGachaCrank() {
-            if (isGachaCranking || playerCoins <= 0 || collectedGiftsCount >= 5) return;
-            isGachaCranking = true; playerCoins--;
-            document.getElementById('player-coins').innerText = playerCoins;
-            document.getElementById('gacha-hint').innerText = "🪙 金幣投入！扭蛋滾動中...";
-            
-            document.getElementById('gacha-crank-btn').classList.add('crank-rotate');
-            document.getElementById('gacha-machine-box').classList.add('shake-effect');
-
-            // 扭蛋球在玻璃球內輕微抖動
-            const capsules = document.querySelectorAll('.gacha-capsule');
-            capsules.forEach(c => {
-                c.style.transition = 'all 0.1s ease';
-                c.style.transform = `translate(${Math.random()*6-3}px, ${Math.random()*6-3}px) rotate(${Math.random()*360}deg)`;
-            });
-
-            setTimeout(() => {
-                document.getElementById('gacha-crank-btn').classList.remove('crank-rotate');
-                document.getElementById('gacha-machine-box').classList.remove('shake-effect');
-                
-                const ball = document.getElementById('spawned-ball');
-                // 隨機決定掉落出來的扭蛋顏色
-                ball.style.background = capsuleColors[collectedGiftsCount % capsuleColors.length];
-                ball.style.display = 'block';
-                ball.style.animation = 'dropCapsule 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
-                document.getElementById('gacha-hint').innerText = "🎁 扭蛋成功掉落！快點擊拆開！";
-            }, 900);
-        }
-
-        function openCapsule() {
-            const ball = document.getElementById('spawned-ball');
-            ball.classList.add('capsule-shake-effect');
-            setTimeout(() => {
-                ball.classList.remove('capsule-shake-effect'); ball.style.display = 'none'; isGachaCranking = false;
-                const poolIndex = Math.floor(Math.random() * currentGiftPool.length);
-                const gift = currentGiftPool.splice(poolIndex, 1)[0];
-                document.getElementById('modal-emoji').innerText = gift.emoji;
-                document.getElementById('modal-name').innerText = gift.name;
-                document.getElementById('modal-desc').innerText = gift.desc;
-                document.getElementById('gift-modal').classList.add('active');
-            }, 500);
-        }
-
-        function closeGiftModal() {
-            document.getElementById('gift-modal').classList.remove('active');
-            collectedGiftsCount++;
-            document.getElementById('gift-count').innerText = `${collectedGiftsCount} / 5`;
-            
-            // 每次抽完，拿掉玻璃球內的一顆扭蛋
-            const pool = document.getElementById('gacha-pool');
-            if(pool.children.length > 0) pool.removeChild(pool.children[0]);
-
-            if (collectedGiftsCount >= 5) {
-                document.getElementById('gacha-hint').innerText = "🏆 5個生日驚喜扭蛋全部解鎖！";
-                document.getElementById('gacha-crank-btn').style.display = 'none';
-                document.getElementById('next-phase-btn').style.display = 'inline-block';
-            } else {
-                document.getElementById('gacha-hint').innerText = "繼續轉動旋鈕，抽取下一個驚喜！";
-            }
-        }
-
-        // --- 回憶相簿控制 ---
-        function startAlbumPhase() {
-            switchScene('gacha-scene', 'album-scene');
-            const container = document.getElementById('album-book-container');
-            container.innerHTML = '';
-
-            CONFIG.memoryImages.forEach((src, index) => {
-                const frame = document.createElement('div');
-                frame.classList.add('polaroid-frame');
-                const img = document.createElement('img');
-                img.src = src;
-                img.onerror = function() {
-                    this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23FFE082'/><text x='50%25' y='50%25' font-size='12' dominant-baseline='middle' text-anchor='middle' fill='%23666'>Memory " + (index+1) + "</text></svg>";
-                };
-                frame.appendChild(img); container.appendChild(frame);
-            });
-
-            let currentImgIdx = 0;
-            const frames = container.children;
-            
-            function showNextPhoto() {
-                if(currentImgIdx > 0) frames[currentImgIdx-1].classList.remove('current');
-                if(currentImgIdx < frames.length) {
-                    frames[currentImgIdx].classList.add('current');
-                    currentImgIdx++;
-                    setTimeout(showNextPhoto, 2200);
-                } else {
-                    setTimeout(() => {
-                        const blessBox = document.getElementById('bless-photo-box');
-                        const cImg = document.createElement('img');
-                        cImg.src = CONFIG.coupleImage;
-                        cImg.onerror = function() {
-                            this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%23FF8A80'/><text x='50%25' y='50%25' font-size='14' text-anchor='middle' fill='white'>❤️</text></svg>";
-                        };
-                        blessBox.appendChild(cImg);
-                        switchScene('album-scene', 'bless-scene');
-                    }, 1000);
-                }
-            }
-            setTimeout(showNextPhoto, 300);
-        }
-
-        // 產生背景漂浮粒子
-        const pContainer = document.getElementById('particle-container');
-        for (let i = 0; i < 15; i++) {
-            const p = document.createElement('div'); p.classList.add('particle');
-            p.style.width = p.style.height = `${Math.random()*6 + 4}px`;
-            p.style.left = `${Math.random()*100}%`; p.style.top = `${Math.random()*100}%`;
-            p.style.animationDelay = `${Math.random()*6}s`; p.style.animationDuration = `${Math.random()*4 + 5}s`;
-            pContainer.appendChild(p);
-        }
-    </script>
-</body>
-</html>
