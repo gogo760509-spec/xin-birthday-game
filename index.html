@@ -1,561 +1,630 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>智信生日幸運遊戲機</title>
-<style>
-*{box-sizing:border-box}
-html,body{
-  margin:0;width:100%;height:100%;overflow:hidden;
-  font-family:"Microsoft JhengHei",Arial,sans-serif;
-  color:#60331f;
-  background:linear-gradient(145deg,#fff1c8,#ffc3ad,#f27b7b);
-}
-body:before{
-  content:"";position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(circle at top,rgba(255,255,255,.55),transparent 45%),
-             radial-gradient(circle at bottom,rgba(95,37,20,.18),transparent 60%);
-}
-.page{
-  display:none;position:relative;width:100vw;height:100vh;
-  padding:22px 16px;align-items:center;justify-content:center;text-align:center;
-}
-.page.active{display:flex;animation:fade .5s ease}
-@keyframes fade{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
-.card{
-  width:min(94vw,420px);max-height:94vh;overflow:auto;
-  padding:22px 18px;border-radius:30px;
-  background:rgba(255,255,255,.48);
-  border:1px solid rgba(255,255,255,.65);
-  box-shadow:0 20px 45px rgba(91,43,21,.25);
-  backdrop-filter:blur(12px);
-}
-h1{font-size:28px;color:#7d2f25;margin:10px 0 14px}
-p{font-size:16px;line-height:1.75;margin:8px 0}
-button{
-  border:0;border-radius:999px;padding:14px 26px;margin-top:16px;
-  font-size:17px;font-weight:900;color:#66351f;
-  background:linear-gradient(135deg,#fff5b5,#f6bd4a,#fff1a4);
-  box-shadow:0 8px 0 #b36b2e,0 16px 28px rgba(82,39,18,.25);
-}
-button:active{transform:translateY(5px);box-shadow:0 3px 0 #b36b2e}
-button:disabled{opacity:.6}
-.hidden{display:none!important}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智信生日幸運遊戲機</title>
+    <style>
+        /* --- 🌸 可愛清爽馬卡龍 核心變數定義 --- */
+        :root {
+            --gold-primary: #E6B800;
+            --gold-light: #FFF4B8;
+            --gold-dark: #B38F00;
+            --champagne: #FFF8E7;
+            --cream-white: #FFFFF0;
+            --mint-green: #E8F5E9;
+            --pastel-pink: #FFF0F5;
+            --coral-soft: #FF9E80;
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(230, 184, 0, 0.3);
+            --bubble-blue: #E3F2FD;
+        }
 
-.decor span{
-  position:fixed;pointer-events:none;z-index:0;
-  animation:fall linear infinite;
-}
-@keyframes fall{
-  from{transform:translateY(-10vh) rotate(0);opacity:0}
-  20%{opacity:1}
-  to{transform:translateY(110vh) rotate(360deg);opacity:.2}
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
-.slot-machine{
-  width:100%;max-width:340px;margin:0 auto 16px;padding:18px 14px 24px;
-  border-radius:34px;position:relative;
-  background:linear-gradient(160deg,#b82f37,#ff7d68 55%,#8e252c);
-  border:8px solid #f7c85f;
-  box-shadow:0 20px 38px rgba(83,36,20,.36),inset 0 0 28px rgba(255,255,255,.22);
-}
-.lights{display:flex;justify-content:space-around;margin-bottom:12px}
-.lights span{
-  width:12px;height:12px;border-radius:50%;background:#fff6b8;
-  box-shadow:0 0 14px #fff;animation:blink .65s infinite alternate;
-}
-@keyframes blink{to{opacity:.35;transform:scale(.75)}}
-.slot-title{font-size:15px;font-weight:900;color:#fff7c8;margin-bottom:10px}
-.reels{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
-  padding:10px;border-radius:22px;background:#6b2e25;border:5px solid #fff0a2;
-}
-.reel{
-  height:122px;border-radius:16px;background:#fff8ec;border:4px solid #fff;
-  overflow:hidden;display:flex;align-items:center;justify-content:center;
-}
-.reel img{
-  width:82px;height:98px;object-fit:cover;border-radius:8px;
-  background:#fff;border:6px solid white;box-shadow:0 8px 16px rgba(0,0,0,.18);
-}
-.reel.spinning img{animation:spinReel .07s linear infinite}
-@keyframes spinReel{
-  from{transform:translateY(-18px) scale(.95);filter:blur(1px)}
-  to{transform:translateY(20px) scale(1.04);filter:blur(2px)}
-}
-.handle{
-  position:absolute;right:-30px;top:86px;width:20px;height:92px;
-  background:#6f2d23;border-radius:20px;
-}
-.handle:before{
-  content:"";position:absolute;top:-25px;left:-14px;width:48px;height:48px;
-  border-radius:50%;background:linear-gradient(#fff3aa,#f6b741);border:4px solid #7b2f24;
-}
-.win-glow{animation:winGlow .35s ease infinite alternate}
-@keyframes winGlow{to{filter:drop-shadow(0 0 24px #fff7a8) brightness(1.2);transform:scale(1.015)}}
-.status{margin:10px 0;font-size:17px;font-weight:900;color:#7b2f24}
-.coin-row{font-size:28px;letter-spacing:2px;margin:12px 0}
+        body, html {
+            width: 100%;
+            height: 100vh;
+            background-color: #FFF8E7;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #4A4A4A;
+            overflow: hidden;
+        }
 
-.gacha{
-  width:280px;height:310px;margin:0 auto 18px;position:relative;border-radius:36px;
-  background:linear-gradient(160deg,#c83f3f,#ff806c 52%,#9d2f32);
-  border:8px solid #f7c85f;box-shadow:0 20px 42px rgba(83,36,20,.34);
-}
-.gacha-glass{
-  position:absolute;top:25px;left:50%;transform:translateX(-50%);
-  width:190px;height:155px;border-radius:95px 95px 38px 38px;
-  background:rgba(255,255,255,.45);border:6px solid #fff4bd;
-}
-.gacha-glass:before{
-  content:"🔴 🟡 🟠 🟣 🔵 🟢";position:absolute;width:160px;left:14px;top:55px;
-  font-size:24px;line-height:1.5;
-}
-.gacha-body{
-  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
-  width:185px;height:120px;border-radius:30px;background:linear-gradient(#ff7665,#bd3232);
-  border:5px solid #fff0a2;
-}
-.knob{
-  position:absolute;bottom:69px;left:50%;transform:translateX(-50%);
-  width:72px;height:72px;border-radius:50%;background:linear-gradient(#fff5b0,#f6ba44);
-  border:6px solid #7b2f24;z-index:3;
-}
-.gacha.spin .knob{animation:rotate .45s linear infinite}
-@keyframes rotate{to{transform:translateX(-50%) rotate(360deg)}}
-.capsule{
-  width:82px;height:82px;margin:16px auto 4px;border-radius:50%;
-  background:linear-gradient(90deg,#ff7979 0 50%,#fff2a8 50% 100%);
-  border:6px solid #fff;box-shadow:0 12px 24px rgba(0,0,0,.2);
-  cursor:pointer;animation:bounce .8s ease-in-out infinite alternate;
-}
-@keyframes bounce{to{transform:translateY(-10px)}}
-.capsule.open{animation:crack .7s ease forwards}
-@keyframes crack{
-  35%{transform:rotate(10deg) scale(1.15)}
-  70%{transform:rotate(-12deg) scale(1.2)}
-  100%{transform:scale(0);opacity:0}
-}
-.gift-card{
-  display:none;padding:16px 12px;border-radius:24px;
-  background:rgba(255,255,255,.62);box-shadow:0 18px 36px rgba(92,44,23,.18);
-}
-.gift-card.show{display:block;animation:slideUp .55s ease both}
-@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        /* 夢幻清爽馬卡龍漸層背景 */
+        .game-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            background: linear-gradient(135deg, #FFE4E1 0%, #E8F5E9 50%, #E3F2FD 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-.album{
-  width:300px;height:240px;margin:0 auto 14px;position:relative;
-}
-.memory-photo{
-  position:absolute;left:50%;top:50%;width:220px;padding:10px 10px 32px;
-  background:#fffaf0;border-radius:5px;box-shadow:0 14px 28px rgba(73,35,18,.25);
-  transform:translate(-50%,-50%) rotate(-3deg);
-}
-.memory-photo img{width:100%;height:150px;object-fit:cover;border-radius:4px}
-.memory-photo span{position:absolute;left:0;right:0;bottom:8px;font-size:13px;color:#8a5a3c}
-.polaroid{
-  position:absolute;right:10px;top:68px;z-index:4;width:112px;padding:8px 8px 25px;
-  background:#fffaf0;border-radius:5px;box-shadow:0 13px 28px rgba(73,35,18,.26);
-  transform:rotate(7deg);animation:polaroidFloat 3.5s ease-in-out infinite;
-}
-.polaroid img{width:100%;height:92px;object-fit:cover;border-radius:3px}
-.polaroid span{position:absolute;left:0;right:0;bottom:6px;font-size:12px;color:#8a5a3c}
-@keyframes polaroidFloat{
-  0%,100%{transform:rotate(7deg) translateY(0)}
-  50%{transform:rotate(4deg) translateY(-12px)}
-}
-.confetti{
-  position:fixed;width:8px;height:14px;z-index:10;pointer-events:none;
-}
-@keyframes confettiFly{
-  to{transform:translate(var(--x),var(--y)) rotate(760deg);opacity:0}
-}
-.toast{
-  position:fixed;left:50%;top:24px;transform:translateX(-50%) translateY(-80px);
-  z-index:50;width:min(90vw,340px);padding:12px 16px;border-radius:18px;
-  color:#6b351f;font-weight:900;background:linear-gradient(135deg,#fff7c7,#f7c85f);
-  box-shadow:0 12px 28px rgba(72,34,14,.22);opacity:0;
-}
-.toast.show{animation:toast 2.1s ease forwards}
-@keyframes toast{
-  10%,80%{opacity:1;transform:translateX(-50%) translateY(0)}
-  100%{opacity:0;transform:translateX(-50%) translateY(-80px)}
-}
-</style>
+        /* 緩慢漂浮的小氣球與亮片背景動畫 */
+        .particles { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 1; }
+        .particle { position: absolute; background: radial-gradient(circle, var(--gold-light) 0%, transparent 80%); border-radius: 50%; opacity: 0.5; animation: floatUp 8s infinite linear; }
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0.6); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) translateX(30px) scale(1); opacity: 0; }
+        }
+
+        /* --- LOADING 畫面 --- */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(135deg, #FFF0F5 0%, #E3F2FD 100%);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeOutContainer 0.8s ease-out 2.5s forwards;
+        }
+        .loading-logo { font-size: 4.5rem; margin-bottom: 20px; animation: bounceLogo 2s infinite ease-in-out; }
+        .loading-title { font-size: 1.5rem; font-weight: bold; color: var(--gold-dark); text-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 8px; letter-spacing: 1px; }
+        .loading-sub { font-size: 0.9rem; color: #888; margin-bottom: 30px; }
+        .progress-container { width: 65%; max-width: 250px; height: 10px; background: rgba(0, 0, 0, 0.05); border-radius: 20px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
+        .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #FFB74D, #FFF176, #FFB74D); animation: loadProgress 2.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; box-shadow: 0 0 5px rgba(255,183,77,0.5); }
+
+        /* --- 通用場景與玻璃卡片 --- */
+        .scene {
+            position: absolute;
+            width: 92%;
+            max-width: 360px;
+            z-index: 10;
+            display: none;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .scene.active { display: block; opacity: 1; transform: scale(1); }
+        
+        .glass-card { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px); 
+            border: 2px solid rgba(255,255,255,0.6); 
+            border-radius: 32px; 
+            padding: 25px 20px; 
+            text-align: center; 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255,255,255,0.5); 
+        }
+        #intro-scene { animation: fadeInScene 0.8s ease-out 2.8s forwards; }
+        .scene-title { font-size: 1.5rem; color: #4A4A4A; margin-bottom: 15px; font-weight: bold; }
+        .story-text { font-size: 0.95rem; line-height: 1.8; color: #5A5A5A; margin-bottom: 25px; }
+        .highlight-gold { color: #E67E22; font-weight: bold; }
+
+        /* --- 🎰 可愛風拉霸機 UI --- */
+        .slot-machine-frame { background: linear-gradient(135deg, #FF8A80 0%, #FF5252 100%); border: 5px solid #FFF; border-radius: 28px; padding: 15px; box-shadow: 0 10px 25px rgba(255,82,82,0.2), 0 0 10px var(--gold-primary); position: relative; margin-bottom: 15px; }
+        .marquee-bulbs { display: flex; justify-content: space-between; padding: 0 10px; margin-bottom: 10px; }
+        .bulb { width: 8px; height: 8px; background-color: #FFF; border-radius: 50%; animation: bulbBlink 0.4s infinite alternate; }
+        .bulb:nth-child(even) { animation-delay: 0.2s; background-color: #FFF59D; }
+        .slots-container { display: flex; justify-content: space-between; background-color: #FFF3E0; padding: 8px; border-radius: 16px; border: 2px solid #FFCC80; gap: 8px; overflow: hidden; }
+        
+        .slot-window { flex: 1; height: 110px; background-color: #FFF; border-radius: 12px; border: 4px solid #FFF; border-bottom: 14px solid #FFF; box-shadow: 0 5px 10px rgba(0,0,0,0.08); position: relative; overflow: hidden; }
+        .slot-reel { position: absolute; top: 0; left: 0; width: 100%; display: flex; flex-direction: column; }
+        .slot-item { width: 100%; height: 92px; display: flex; justify-content: center; align-items: center; background: #FAFAFA; overflow: hidden; }
+        .slot-item img, .slot-placeholder { width: 100%; height: 100%; object-fit: cover; }
+        .slot-placeholder { display: flex; justify-content: center; align-items: center; font-size: 2rem; background: #FFF9C4; }
+        
+        .game-status-bar { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 0.9rem; color: #666; font-weight: bold; }
+        .hint-text { font-size: 0.95rem; min-height: 24px; color: #E67E22; margin-bottom: 15px; font-weight: bold; }
+
+        /* --- 🔮 迪士尼經典立體扭蛋機 UI 升級版 --- */
+        .gacha-machine-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin-bottom: 15px;
+            padding-bottom: 70px; /* 預留大扭蛋掉落空間 */
+        }
+
+        /* 上方透明大圓球 */
+        .gacha-globe {
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6) 0%, rgba(240,248,255,0.2) 60%, rgba(200,220,255,0.4) 100%);
+            border-radius: 50%;
+            border: 4px solid #FFF;
+            position: relative;
+            z-index: 3;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05), inset -10px -10px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        /* 扭蛋球玻璃高光 */
+        .gacha-globe::after {
+            content: '';
+            position: absolute;
+            top: 15px; left: 20px;
+            width: 40px; height: 20px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            transform: rotate(-30deg);
+        }
+
+        /* 扭蛋池：讓扭蛋球隨機散落堆疊 */
+        .gacha-ball-pool {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0; left: 0;
+        }
+
+        .gacha-capsule {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            position: absolute;
+            background: linear-gradient(to bottom, #FF8A80 50%, #FFF 50%);
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        /* 下方胖胖轉蛋機底座 */
+        .gacha-base {
+            width: 150px;
+            height: 110px;
+            background: linear-gradient(135deg, #FFAB91 0%, #FF7043 100%);
+            border: 4px solid #FFF;
+            border-top: none;
+            border-radius: 0 0 40px 40px / 0 0 25px 25px;
+            margin-top: -25px; /* 與圓球完美拼接合 */
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 10px 20px rgba(255,112,67,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 旋鈕外框金色裝飾 */
+        .crank-housing {
+            width: 65px; height: 65px;
+            background: #FFF;
+            border-radius: 50%;
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .gacha-crank { 
+            width: 50px; height: 50px; 
+            background: linear-gradient(135deg, #FFF59D 0%, #FBC02D 100%); 
+            border: 2px solid #FFF; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 1.3rem; 
+            transition: transform 0.5s ease-in-out; 
+        }
+        .crank-rotate { transform: rotate(360deg); }
+        
+        /* 扭蛋出口 */
+        .gacha-exit { 
+            width: 44px; height: 32px; 
+            background: #424242; 
+            border: 3px solid #FFF; 
+            border-radius: 10px 10px 0 0; 
+            position: absolute; 
+            bottom: 0; 
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.3);
+        }
+
+        /* 掉落出來的大扭蛋 */
+        .spawned-capsule { 
+            width: 55px; height: 55px; 
+            border-radius: 50%; 
+            background: linear-gradient(to bottom, #80D8FF 50%, #FFF 50%); 
+            position: absolute; 
+            bottom: 10px; 
+            left: calc(50% - 27.5px); 
+            z-index: 10; 
+            cursor: pointer; 
+            display: none; 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
+        }
+
+        /* --- 📜 彈出式精緻禮物卡片 --- */
+        .gift-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(255,240,245,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 200; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0.4s; }
+        .gift-overlay.active { opacity: 1; visibility: visible; }
+        .gift-card { width: 85%; max-width: 310px; background: #FFF; border-radius: 28px; padding: 25px 20px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.08); border: 3px solid var(--gold-light); transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .gift-overlay.active .gift-card { transform: scale(1); }
+        .gift-emoji { font-size: 4rem; margin-bottom: 12px; }
+        .gift-name { font-size: 1.35rem; color: #4A4A4A; margin-bottom: 8px; font-weight: bold; }
+        .gift-desc { font-size: 0.95rem; color: #666; line-height: 1.6; margin-bottom: 20px; }
+
+        /* --- 🖼️ 回憶相簿場景 --- */
+        .album-book { width: 100%; height: 260px; position: relative; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; }
+        .polaroid-frame { width: 180px; height: 220px; background: #FFF; padding: 12px 12px 35px 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-radius: 4px; position: absolute; opacity: 0; transform: scale(0.9) rotate(-5deg); transition: all 0.8s ease-in-out; }
+        .polaroid-frame img { width: 100%; height: 100%; object-fit: cover; border: 1px solid #E0E0E0; }
+        .polaroid-frame.current { opacity: 1; transform: scale(1.05) rotate(3deg); z-index: 5; animation: kenBurns 2.5s infinite alternate ease-in-out; }
+        @keyframes kenBurns { 0% { transform: scale(1.03) rotate(2deg); } 100% { transform: scale(1.07) rotate(4deg); } }
+
+        /* --- 💌 生日祝福最終場景 --- */
+        .bless-photo-aside { width: 110px; height: 135px; background: #FFF; padding: 6px 6px 20px 6px; box-sizing: border-box; box-shadow: 0 8px 20px rgba(0,0,0,0.06); border-radius: 2px; transform: rotate(-8deg); margin: 0 auto 15px auto; animation: floatingPolaroid 3s infinite ease-in-out; }
+        .bless-photo-aside img { width: 100%; height: 100%; object-fit: cover; }
+        @keyframes floatingPolaroid { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-8px) rotate(-10deg); } }
+
+        /* 可愛圓潤按鈕 */
+        .btn-premium { background: linear-gradient(135deg, #FFB74D 0%, #FFA726 100%); border: none; border-radius: 30px; color: #FFF; font-size: 1.05rem; font-weight: bold; padding: 12px 35px; cursor: pointer; box-shadow: 0 5px 15px rgba(245,124,0,0.2); transition: transform 0.1s; width: 85%; letter-spacing: 1px; }
+        .btn-premium:active { transform: scale(0.96); }
+        .btn-premium:disabled { background: #DDD; color: #AAA; box-shadow: none; cursor: not-allowed; }
+
+        /* 動態軌跡 */
+        @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
+        @keyframes fadeOutContainer { 0% { opacity: 1; visibility: visible; } 99% { opacity: 0; visibility: visible; } 100% { opacity: 0; visibility: hidden; } }
+        @keyframes fadeInScene { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes bounceLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        @keyframes bulbBlink { 0% { opacity: 0.4; } 100% { opacity: 1; filter: drop-shadow(0 0 4px #FFF59D); } }
+        .shake-effect { animation: machineShake 0.1s infinite; }
+        @keyframes machineShake { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2px, 2px); } }
+        .zoom-slow-effect { transform: scale(1.04) !important; transition: transform 1.2s ease !important; }
+        .capsule-shake-effect { animation: machineShake 0.15s infinite; }
+        @keyframes dropCapsule { 0% { bottom: 65px; transform: scale(0.4) rotate(0deg); } 100% { bottom: 12px; transform: scale(1) rotate(360deg); } }
+    </style>
 </head>
-
 <body>
-<div class="decor" id="decor"></div>
-<div id="toast" class="toast"></div>
 
-<section id="loading" class="page active">
-  <div class="card">
-    <h1>🎂 智信生日幸運遊戲機</h1>
-    <p>Loading... 正在準備生日驚喜</p>
-  </div>
-</section>
+    <div class="game-container">
+        <div class="particles" id="particle-container"></div>
 
-<section id="intro" class="page">
-  <div class="card">
-    <div class="slot-machine">
-      <div class="lights"><span></span><span></span><span></span><span></span><span></span></div>
-      <div class="slot-title">LUCKY BIRTHDAY SLOT</div>
-      <div class="reels">
-        <div class="reel"><img src="slot1.jpg"></div>
-        <div class="reel"><img src="slot2.jpg"></div>
-        <div class="reel"><img src="target.jpg"></div>
-      </div>
-      <div class="handle"></div>
+        <div id="loading-screen">
+            <div class="loading-logo">🎂</div>
+            <div class="loading-title">智信生日幸運遊戲機</div>
+            <div class="loading-sub">Loading...</div>
+            <div class="progress-container"><div class="progress-bar"></div></div>
+        </div>
+
+        <div id="intro-scene" class="scene active">
+            <div class="glass-card">
+                <h2 class="scene-title">🎉 Happy Birthday 智信！</h2>
+                <p class="story-text">
+                    今天是你的生日，<br>
+                    維柔準備了一點小驚喜。<br><br>
+                    想抽生日禮物之前，<br>
+                    你必須先完成幸運拉霸挑戰。<br><br>
+                    只要成功拉出今天的幸運照片，<br>
+                    就能獲得 <span class="highlight-gold">🪙五枚生日金幣</span>！
+                </p>
+                <button class="btn-premium" onclick="switchScene('intro-scene', 'slot-scene'); initReels();">開始挑戰 ➔</button>
+            </div>
+        </div>
+
+        <div id="slot-scene" class="scene">
+            <div class="glass-card" id="slot-card-target">
+                <h2 class="scene-title">🎰 幸運拉霸挑戰</h2>
+                <div class="slot-machine-frame" id="machine-frame">
+                    <div class="marquee-bulbs">
+                        <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+                        <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+                    </div>
+                    <div class="slots-container">
+                        <div class="slot-window"><div class="slot-reel" id="reel-0"></div></div>
+                        <div class="slot-window"><div class="slot-reel" id="reel-1"></div></div>
+                        <div class="slot-window"><div class="slot-reel" id="reel-2"></div></div>
+                    </div>
+                </div>
+                <div class="game-status-bar">
+                    <span>🎰 剩餘：<span id="attempts-left" class="highlight-gold">5</span> 次</span>
+                    <span>🏆 成就：<span id="slot-achievement" style="color:#2ECC71">未解鎖</span></span>
+                </div>
+                <div class="hint-text" id="slot-hint">點擊按鈕，試試好運！</div>
+                <button class="btn-premium" id="spin-btn" onclick="spinSlots()">拉一下！</button>
+            </div>
+        </div>
+
+        <div id="gacha-scene" class="scene">
+            <div class="glass-card">
+                <h2 class="scene-title">🔮 夢幻生日扭蛋機</h2>
+                
+                <div class="gacha-machine-wrapper" id="gacha-machine-box">
+                    <div class="gacha-globe">
+                        <div class="gacha-ball-pool" id="gacha-pool">
+                            </div>
+                    </div>
+                    <div class="gacha-base">
+                        <div class="crank-housing">
+                            <div class="gacha-crank" id="gacha-crank-btn" onclick="turnGachaCrank()">🌀</div>
+                        </div>
+                        <div class="gacha-exit"></div>
+                    </div>
+                    <div class="spawned-capsule" id="spawned-ball" onclick="openCapsule()"></div>
+                </div>
+
+                <div class="game-status-bar">
+                    <span>🪙 金幣：<span id="player-coins" class="highlight-gold">0</span> 枚</span>
+                    <span>🎁 收藏：<span id="gift-count" class="highlight-gold">0 / 5</span></span>
+                </div>
+                <div class="hint-text" id="gacha-hint">點擊 🌀 旋鈕投入金幣扭蛋！</div>
+                <button class="btn-premium" id="next-phase-btn" style="display:none;" onclick="startAlbumPhase()">觀看回憶相簿 ➔</button>
+            </div>
+        </div>
+
+        <div id="album-scene" class="scene">
+            <div class="glass-card">
+                <h2 class="scene-title">📸 我們的甜蜜回憶</h2>
+                <div class="album-book" id="album-book-container">
+                    </div>
+                <div class="hint-text" style="color:#888;" id="album-hint">回憶點滴翻閱中...</div>
+            </div>
+        </div>
+
+        <div id="bless-scene" class="scene">
+            <div class="glass-card" style="padding: 20px 15px;">
+                <div class="bless-photo-aside" id="bless-photo-box"></div>
+                <h2 class="scene-title" style="color:#E67E22; margin-bottom: 8px;">信信，生日快樂 ❤️</h2>
+                <p class="story-text" style="font-size: 0.88rem; line-height: 1.6; text-align: left; margin-bottom: 0; background: rgba(255,255,255,0.5); padding: 12px; border-radius: 16px;">
+                    希望今天這個小遊戲，<br>
+                    能讓你玩得開心，也為你的生日增添一點驚喜！<br>
+                    祝你生日快樂、身體健康，每天都平安順心。<br>
+                    謝謝你一直以來的陪伴與照顧。<br><br>
+                    <span style="display:block; text-align:right; font-weight:bold; color:#E67E22;">—— 維柔 ❤️</span>
+                </p>
+            </div>
+        </div>
+
     </div>
-    <h1>🎉 Happy Birthday 智信！</h1>
-    <p>今天是你的生日，<br>維柔準備了一點小驚喜。</p>
-    <p>想抽生日禮物之前，<br>你必須先完成幸運拉霸挑戰。</p>
-    <p>只要成功拉出今天的幸運照片，<br>就能獲得 🪙×5 生日金幣！</p>
-    <button onclick="go('slot')">開始挑戰</button>
-  </div>
-</section>
 
-<section id="slot" class="page">
-  <div class="card">
-    <div id="slotMachine" class="slot-machine">
-      <div class="lights"><span></span><span></span><span></span><span></span><span></span></div>
-      <div class="slot-title">三格都是幸運照片才中獎</div>
-      <div class="reels">
-        <div class="reel" id="reelBox1"><img id="reel1" src="slot1.jpg"></div>
-        <div class="reel" id="reelBox2"><img id="reel2" src="slot2.jpg"></div>
-        <div class="reel" id="reelBox3"><img id="reel3" src="slot3.jpg"></div>
-      </div>
-      <div class="handle"></div>
-    </div>
-    <div id="slotStatus" class="status">🎰 剩餘次數：5</div>
-    <p id="slotMsg">拉到三張一樣的幸運照片，就能獲得生日金幣！</p>
-    <button id="spinBtn" onclick="spinSlot()">拉一下！</button>
-    <button id="toGachaBtn" class="hidden" onclick="go('gachaIntro')">前往扭蛋機</button>
-  </div>
-</section>
-
-<section id="gachaIntro" class="page">
-  <div class="card">
-    <div class="gacha">
-      <div class="gacha-glass"></div>
-      <div class="gacha-body"></div>
-      <div class="knob"></div>
-    </div>
-    <h1>金幣已解鎖！</h1>
-    <div class="coin-row">🪙🪙🪙🪙🪙</div>
-    <p>恭喜！<br>可以開始抽生日禮物了。</p>
-    <button onclick="go('gachaGame')">開始抽扭蛋</button>
-  </div>
-</section>
-
-<section id="gachaGame" class="page">
-  <div class="card">
-    <div id="gachaMachine" class="gacha">
-      <div class="gacha-glass"></div>
-      <div class="gacha-body"></div>
-      <div class="knob"></div>
-    </div>
-    <div id="coinStatus" class="status"></div>
-    <div id="collectStatus">🎁 禮物收藏 0/5</div>
-    <button id="coinBtn" onclick="dropCapsule()">投入金幣</button>
-
-    <div id="capsuleArea" class="hidden">
-      <p>點擊扭蛋打開禮物！</p>
-      <div id="capsule" class="capsule" onclick="openGift()"></div>
+    <div class="gift-overlay" id="gift-modal">
+        <div class="gift-card">
+            <div class="gift-emoji" id="modal-emoji">❤️</div>
+            <div class="gift-name" id="modal-name">維柔送智信</div>
+            <div class="gift-desc" id="modal-desc">說明文字</div>
+            <button class="btn-premium" style="width:100%" onclick="closeGiftModal()">收下禮物</button>
+        </div>
     </div>
 
-    <div id="giftCard" class="gift-card">
-      <h1 id="giftTitle"></h1>
-      <p><b>恭喜獲得！</b></p>
-      <p id="giftDesc"></p>
-      <button onclick="acceptGift()">收下</button>
-    </div>
-  </div>
-</section>
+    <script>
+        const CONFIG = {
+            slotImages: ["slot1.jpg", "slot2.jpg", "slot3.jpg", "slot4.jpg", "slot5.jpg", "target.jpg"],
+            memoryImages: ["memory1.jpg", "memory2.jpg"],
+            coupleImage: "couple.jpg",
+            giftPool: [
+                { emoji: "❤️", name: "維柔送智信", desc: "超特權卡！可以對維柔許下任意一個生日願望！" },
+                { emoji: "🍺", name: "一手啤酒", desc: "下班放鬆首選！維柔贊助你最愛喝的精釀啤酒一手！" },
+                { emoji: "🍽️", name: "一頓大餐", desc: "帶你去吃精緻美食，今天想吃什麼全由你指定！" },
+                { emoji: "💆", name: "免費按摩 10 分鐘", desc: "辛苦啦！憑此卡即可兌換維柔專屬溫柔舒壓搥背服務。" },
+                { emoji: "🍻", name: "酒精之旅", desc: "今晚放心喝到飽！維柔全程擔任你的專屬貼心安全駕駛！" },
+                { emoji: "🐠", name: "維柔買魚給你養", desc: "水族愛好者福利！維柔出資陪你一起挑選新魚寶貝入缸！" }
+            ]
+        };
 
-<section id="memory" class="page">
-  <div class="card">
-    <h1>回憶相簿 📖</h1>
-    <div class="album">
-      <div class="memory-photo">
-        <img id="memoryImg" src="memory1.jpg" alt="memory">
-        <span id="memoryText">Memory 1</span>
-      </div>
-    </div>
-    <p>把今天的小驚喜，<br>也收進我們的回憶裡。</p>
-  </div>
-</section>
+        const fallbackEmojis = ["🍓", "🍒", "🍇", "🍊", "🍋", "💎"];
+        const capsuleColors = [
+            "linear-gradient(to bottom, #FF8A80 50%, #FFF 50%)",
+            "linear-gradient(to bottom, #80D8FF 50%, #FFF 50%)",
+            "linear-gradient(to bottom, #B9F6CA 50%, #FFF 50%)",
+            "linear-gradient(to bottom, #FFE082 50%, #FFF 50%)",
+            "linear-gradient(to bottom, #EA80FC 50%, #FFF 50%)"
+        ];
 
-<section id="final" class="page">
-  <div class="polaroid">
-    <img src="couple.jpg" alt="合照">
-    <span>Our Memory ♡</span>
-  </div>
-  <div class="card">
-    <h1>信信，生日快樂 ❤️</h1>
-    <p>希望今天這個小遊戲，<br>能讓你玩得開心，<br>也為你的生日增添一點驚喜！</p>
-    <p>祝你生日快樂、身體健康，<br>每天都平安順心。</p>
-    <p>謝謝你一直以來的陪伴與照顧。</p>
-    <p><b>—— 維柔 ❤️</b></p>
-  </div>
-</section>
+        let currentAttempts = 5, isSpinning = false, playerCoins = 0, collectedGiftsCount = 0;
+        let currentGiftPool = [...CONFIG.giftPool];
 
-<script>
-const CONFIG = {
-  slotImages:["slot1.jpg","slot2.jpg","slot3.jpg","slot4.jpg","slot5.jpg","target.jpg"],
-  targetImage:"target.jpg",
-  maxSlotTries:5,
-  coins:5,
-  memoryImages:["memory1.jpg","memory2.jpg","memory3.jpg","memory4.jpg","memory5.jpg"],
-  gifts:[
-    {title:"🍺 一手啤酒",desc:"維柔送你一手啤酒。今天就好好放鬆一下！"},
-    {title:"🍽️ 一頓大餐",desc:"維柔請你去吃一頓大餐，想吃什麼你決定。"},
-    {title:"💆 免費按摩 10 分鐘",desc:"恭喜獲得維柔限定按摩服務，時間 10 分鐘。"},
-    {title:"🍻 酒精之旅",desc:"維柔載你去酒精之旅，負責開車，讓你安心享受。"},
-    {title:"🐠 維柔買魚給你養",desc:"恭喜獲得可愛觀賞魚一隻，讓生活多一點療癒感。"},
-    {title:"✈️ 出國任務卡",desc:"命運指定：智信帶維柔出國一次。"},
-    {title:"👜 包包任務卡",desc:"命運指定：智信送維柔一個包包。"},
-    {title:"💌 紅包任務卡",desc:"命運指定：智信包紅包給維柔。"},
-    {title:"🍲 請吃飯任務卡",desc:"命運指定：智信請維柔吃一餐。"}
-  ]
-};
+        function switchScene(fromId, toId) {
+            document.getElementById(fromId).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(fromId).style.display = 'none';
+                const toScene = document.getElementById(toId);
+                toScene.style.display = 'block';
+                setTimeout(() => toScene.classList.add('active'), 50);
+                if (toId === 'gacha-scene') {
+                    initGachaPool();
+                }
+            }, 500);
+        }
 
-let slotTries = CONFIG.maxSlotTries;
-let slotWon = false;
-let coins = CONFIG.coins;
-let collected = 0;
-let giftPool = shuffle([...CONFIG.gifts]).slice(0, CONFIG.coins);
-let currentGift = null;
-let audioCtx = null;
+        // --- 拉霸控制 ---
+        function initReels() {
+            for (let r = 0; r < 3; r++) {
+                const reel = document.getElementById(`reel-${r}`);
+                reel.innerHTML = '';
+                for (let i = 0; i < 20; i++) {
+                    const idx = i % CONFIG.slotImages.length;
+                    const item = document.createElement('div');
+                    item.classList.add('slot-item');
+                    const img = document.createElement('img');
+                    img.src = CONFIG.slotImages[idx];
+                    img.onerror = function() {
+                        this.style.display = 'none';
+                        const p = document.createElement('div'); p.classList.add('slot-placeholder'); p.innerText = fallbackEmojis[idx];
+                        item.appendChild(p);
+                    };
+                    item.appendChild(img); reel.appendChild(item);
+                }
+            }
+        }
 
-window.onload = function(){
-  setupImageFallbacks();
-  createDecor();
-  updateCoins();
-  setTimeout(()=>go("intro"),1200);
-};
+        function spinSlots() {
+            if (isSpinning || currentAttempts <= 0) return;
+            isSpinning = true; currentAttempts--;
+            document.getElementById('attempts-left').innerText = currentAttempts;
+            document.getElementById('slot-hint').innerText = "🎰 命運轉輪高速旋轉中...";
+            document.getElementById('spin-btn').disabled = true;
+            document.getElementById('machine-frame').classList.add('shake-effect');
 
-function setupImageFallbacks(){
-  document.querySelectorAll("img").forEach(img=>{
-    img.onerror = function(){
-      this.onerror = null;
-      this.src = makeFallback(this.getAttribute("src") || "照片");
-    };
-  });
-}
+            const isWin = (currentAttempts === 0) || (Math.random() < 0.1);
+            let finalIdx = isWin ? [5, 5, 5] : [Math.floor(Math.random()*5), Math.floor(Math.random()*5), Math.floor(Math.random()*5)];
+            if(!isWin && finalIdx[0] === finalIdx[1] && finalIdx[1] === finalIdx[2]) finalIdx[2] = (finalIdx[2] + 1) % 5;
 
-function makeFallback(text){
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="360">
-    <rect width="100%" height="100%" rx="24" fill="#fff4d6"/>
-    <text x="50%" y="46%" text-anchor="middle" font-size="28" fill="#8a4a2c">📷</text>
-    <text x="50%" y="58%" text-anchor="middle" font-size="22" fill="#8a4a2c">${text}</text>
-  </svg>`;
-  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
-}
+            const stopDelays = [1400, 1700, 2000];
+            for (let r = 0; r < 3; r++) {
+                const reel = document.getElementById(`reel-${r}`);
+                reel.style.transition = `transform ${stopDelays[r] / 1000}s cubic-bezier(0.25, 1, 0.5, 1)`;
+                reel.style.transform = `translateY(-${(12 + finalIdx[r]) * 92}px)`;
+            }
 
-function go(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  if(id==="memory") playMemoryAlbum();
-  if(id==="final") burstConfetti();
-}
+            setTimeout(() => {
+                document.getElementById('machine-frame').classList.remove('shake-effect');
+                if (isWin) {
+                    document.getElementById('slot-hint').innerText = "🎉 太棒了！拉中幸運照片！";
+                    document.getElementById('slot-achievement').innerText = "🎉 挑戰成功！";
+                    document.getElementById('slot-card-target').classList.add('zoom-slow-effect');
+                    playerCoins = 5;
+                    setTimeout(() => {
+                        document.getElementById('player-coins').innerText = playerCoins;
+                        switchScene('slot-scene', 'gacha-scene');
+                    }, 1500);
+                } else {
+                    isSpinning = false; document.getElementById('spin-btn').disabled = false;
+                    document.getElementById('slot-hint').innerText = "❌ 差一點點！幸運快來了～";
+                }
+            }, 2100);
+        }
 
-function spinSlot(){
-  if(slotWon || slotTries<=0) return;
+        // --- 🔮 扭蛋球初始化：隨機散落分布 ---
+        function initGachaPool() {
+            const pool = document.getElementById('gacha-pool');
+            pool.innerHTML = '';
+            // 放 12 顆隨機彩色小轉蛋在玻璃球底部，看起來超豐盛
+            for (let i = 0; i < 12; i++) {
+                const capsule = document.createElement('div');
+                capsule.classList.add('gacha-capsule');
+                capsule.style.background = capsuleColors[i % capsuleColors.length];
+                
+                // 計算圓形玻璃球內的隨機分布（偏下方堆疊）
+                const randomLeft = Math.random() * 110 + 25; // 25px 到 135px 之間
+                const randomTop = Math.random() * 40 + 100;   // 100px 到 140px 之間，集中在底部
+                const randomRotate = Math.random() * 360;
 
-  const spinBtn = document.getElementById("spinBtn");
-  const machine = document.getElementById("slotMachine");
-  const reelBoxes = [reelBox1,reelBox2,reelBox3];
-  const reelImgs = [reel1,reel2,reel3];
+                capsule.style.left = `${randomLeft}px`;
+                capsule.style.top = `${randomTop}px`;
+                capsule.style.transform = `rotate(${randomRotate}deg)`;
+                pool.appendChild(capsule);
+            }
+        }
 
-  spinBtn.disabled = true;
-  sound(180);
-  machine.classList.add("win-glow");
-  reelBoxes.forEach(b=>b.classList.add("spinning"));
+        // --- 扭蛋控制 ---
+        let isGachaCranking = false;
+        function turnGachaCrank() {
+            if (isGachaCranking || playerCoins <= 0 || collectedGiftsCount >= 5) return;
+            isGachaCranking = true; playerCoins--;
+            document.getElementById('player-coins').innerText = playerCoins;
+            document.getElementById('gacha-hint').innerText = "🪙 金幣投入！扭蛋滾動中...";
+            
+            document.getElementById('gacha-crank-btn').classList.add('crank-rotate');
+            document.getElementById('gacha-machine-box').classList.add('shake-effect');
 
-  const timers = reelImgs.map((img,idx)=>setInterval(()=>{
-    img.src = randomItem(CONFIG.slotImages);
-  },70 + idx*12));
+            // 扭蛋球在玻璃球內輕微抖動
+            const capsules = document.querySelectorAll('.gacha-capsule');
+            capsules.forEach(c => {
+                c.style.transition = 'all 0.1s ease';
+                c.style.transform = `translate(${Math.random()*6-3}px, ${Math.random()*6-3}px) rotate(${Math.random()*360}deg)`;
+            });
 
-  slotTries--;
-  const forceWin = slotTries === 0;
-  const naturalWin = Math.random() < 0.2;
-  const shouldWin = forceWin || naturalWin;
+            setTimeout(() => {
+                document.getElementById('gacha-crank-btn').classList.remove('crank-rotate');
+                document.getElementById('gacha-machine-box').classList.remove('shake-effect');
+                
+                const ball = document.getElementById('spawned-ball');
+                // 隨機決定掉落出來的扭蛋顏色
+                ball.style.background = capsuleColors[collectedGiftsCount % capsuleColors.length];
+                ball.style.display = 'block';
+                ball.style.animation = 'dropCapsule 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+                document.getElementById('gacha-hint').innerText = "🎁 扭蛋成功掉落！快點擊拆開！";
+            }, 900);
+        }
 
-  const results = shouldWin
-    ? [CONFIG.targetImage,CONFIG.targetImage,CONFIG.targetImage]
-    : generateLoseResult();
+        function openCapsule() {
+            const ball = document.getElementById('spawned-ball');
+            ball.classList.add('capsule-shake-effect');
+            setTimeout(() => {
+                ball.classList.remove('capsule-shake-effect'); ball.style.display = 'none'; isGachaCranking = false;
+                const poolIndex = Math.floor(Math.random() * currentGiftPool.length);
+                const gift = currentGiftPool.splice(poolIndex, 1)[0];
+                document.getElementById('modal-emoji').innerText = gift.emoji;
+                document.getElementById('modal-name').innerText = gift.name;
+                document.getElementById('modal-desc').innerText = gift.desc;
+                document.getElementById('gift-modal').classList.add('active');
+            }, 500);
+        }
 
-  stopReel(0,1000,results,timers,reelBoxes,reelImgs);
-  stopReel(1,1350,results,timers,reelBoxes,reelImgs);
-  stopReel(2,1700,results,timers,reelBoxes,reelImgs,()=>{
-    machine.classList.remove("win-glow");
-    slotStatus.textContent = `🎰 剩餘次數：${slotTries}`;
-    const isWin = results.every(x=>x===CONFIG.targetImage);
+        function closeGiftModal() {
+            document.getElementById('gift-modal').classList.remove('active');
+            collectedGiftsCount++;
+            document.getElementById('gift-count').innerText = `${collectedGiftsCount} / 5`;
+            
+            // 每次抽完，拿掉玻璃球內的一顆扭蛋
+            const pool = document.getElementById('gacha-pool');
+            if(pool.children.length > 0) pool.removeChild(pool.children[0]);
 
-    if(isWin){
-      slotWon = true;
-      sound(900);
-      machine.classList.add("win-glow");
-      burstConfetti();
-      slotMsg.innerHTML = "🎉 恭喜！<br>成功拉中今天的幸運照片！<br><br><span style='font-size:28px'>🪙🪙🪙🪙🪙</span><br><b>生日金幣 ×5</b>";
-      spinBtn.classList.add("hidden");
-      toGachaBtn.classList.remove("hidden");
-      toast("🎉 挑戰成功！");
-    }else{
-      sound(240);
-      slotMsg.innerHTML = "差一點點！<br>幸運快來了～";
-      spinBtn.disabled = false;
-    }
-  });
-}
+            if (collectedGiftsCount >= 5) {
+                document.getElementById('gacha-hint').innerText = "🏆 5個生日驚喜扭蛋全部解鎖！";
+                document.getElementById('gacha-crank-btn').style.display = 'none';
+                document.getElementById('next-phase-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('gacha-hint').innerText = "繼續轉動旋鈕，抽取下一個驚喜！";
+            }
+        }
 
-function stopReel(index,delay,results,timers,reelBoxes,reelImgs,callback){
-  setTimeout(()=>{
-    clearInterval(timers[index]);
-    reelBoxes[index].classList.remove("spinning");
-    reelImgs[index].src = results[index];
-    if(callback) callback();
-  },delay);
-}
+        // --- 回憶相簿控制 ---
+        function startAlbumPhase() {
+            switchScene('gacha-scene', 'album-scene');
+            const container = document.getElementById('album-book-container');
+            container.innerHTML = '';
 
-function generateLoseResult(){
-  let r;
-  do{
-    r = [randomItem(CONFIG.slotImages),randomItem(CONFIG.slotImages),randomItem(CONFIG.slotImages)];
-  }while(r.every(x=>x===CONFIG.targetImage));
-  return r;
-}
+            CONFIG.memoryImages.forEach((src, index) => {
+                const frame = document.createElement('div');
+                frame.classList.add('polaroid-frame');
+                const img = document.createElement('img');
+                img.src = src;
+                img.onerror = function() {
+                    this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23FFE082'/><text x='50%25' y='50%25' font-size='12' dominant-baseline='middle' text-anchor='middle' fill='%23666'>Memory " + (index+1) + "</text></svg>";
+                };
+                frame.appendChild(img); container.appendChild(frame);
+            });
 
-function dropCapsule(){
-  if(coins<=0) return;
-  sound(600);
-  coins--;
-  updateCoins();
-  coinBtn.classList.add("hidden");
-  gachaMachine.classList.add("spin");
-  setTimeout(()=>{
-    gachaMachine.classList.remove("spin");
-    capsuleArea.classList.remove("hidden");
-  },900);
-}
+            let currentImgIdx = 0;
+            const frames = container.children;
+            
+            function showNextPhoto() {
+                if(currentImgIdx > 0) frames[currentImgIdx-1].classList.remove('current');
+                if(currentImgIdx < frames.length) {
+                    frames[currentImgIdx].classList.add('current');
+                    currentImgIdx++;
+                    setTimeout(showNextPhoto, 2200);
+                } else {
+                    setTimeout(() => {
+                        const blessBox = document.getElementById('bless-photo-box');
+                        const cImg = document.createElement('img');
+                        cImg.src = CONFIG.coupleImage;
+                        cImg.onerror = function() {
+                            this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%23FF8A80'/><text x='50%25' y='50%25' font-size='14' text-anchor='middle' fill='white'>❤️</text></svg>";
+                        };
+                        blessBox.appendChild(cImg);
+                        switchScene('album-scene', 'bless-scene');
+                    }, 1000);
+                }
+            }
+            setTimeout(showNextPhoto, 300);
+        }
 
-function openGift(){
-  capsule.classList.add("open");
-  sound(760);
-  currentGift = giftPool.shift();
-  setTimeout(()=>{
-    capsuleArea.classList.add("hidden");
-    giftTitle.textContent = currentGift.title;
-    giftDesc.textContent = currentGift.desc;
-    giftCard.classList.add("show");
-    burstConfetti();
-  },720);
-}
-
-function acceptGift(){
-  collected++;
-  updateCoins();
-  giftCard.classList.remove("show");
-  capsule.classList.remove("open");
-
-  if(coins<=0){
-    setTimeout(()=>go("memory"),700);
-  }else{
-    coinBtn.classList.remove("hidden");
-  }
-}
-
-function updateCoins(){
-  if(document.getElementById("coinStatus")){
-    coinStatus.textContent = "剩餘金幣：" + ("🪙".repeat(coins) || "0");
-  }
-  if(document.getElementById("collectStatus")){
-    collectStatus.textContent = `🎁 禮物收藏 ${collected}/${CONFIG.coins}`;
-  }
-}
-
-function playMemoryAlbum(){
-  let index = 0;
-  memoryImg.src = CONFIG.memoryImages[0];
-  memoryText.textContent = "Memory 1";
-  const timer = setInterval(()=>{
-    index++;
-    if(index >= CONFIG.memoryImages.length){
-      clearInterval(timer);
-      setTimeout(()=>go("final"),1000);
-      return;
-    }
-    memoryImg.style.opacity = "0";
-    setTimeout(()=>{
-      memoryImg.src = CONFIG.memoryImages[index];
-      memoryText.textContent = `Memory ${index+1}`;
-      memoryImg.style.opacity = "1";
-    },250);
-  },1800);
-}
-
-function createDecor(){
-  for(let i=0;i<30;i++){
-    const s = document.createElement("span");
-    s.textContent = ["✨","🎊","⭐","💛"][i%4];
-    s.style.left = Math.random()*100+"vw";
-    s.style.top = "-30px";
-    s.style.animationDuration = (4+Math.random()*5)+"s";
-    s.style.animationDelay = Math.random()*5+"s";
-    document.getElementById("decor").appendChild(s);
-  }
-}
-
-function burstConfetti(){
-  for(let i=0;i<34;i++){
-    const c = document.createElement("div");
-    c.className = "confetti";
-    c.style.left = "50vw";
-    c.style.top = "46vh";
-    c.style.background = ["#fff1a8","#ff7c7c","#f6c65b","#ffffff","#ffb56b"][i%5];
-    c.style.animation = "confettiFly .95s ease-out forwards";
-    c.style.setProperty("--x",(Math.random()*280-140)+"px");
-    c.style.setProperty("--y",(Math.random()*-260-40)+"px");
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),1000);
-  }
-}
-
-function toast(msg){
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.remove("show");
-  void t.offsetWidth;
-  t.classList.add("show");
-}
-
-function sound(freq){
-  try{
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    const now = audioCtx.currentTime;
-    osc.frequency.setValueAtTime(freq,now);
-    gain.gain.setValueAtTime(.06,now);
-    gain.gain.exponentialRampToValueAtTime(.001,now+.2);
-    osc.start(now);
-    osc.stop(now+.22);
-  }catch(e){}
-}
-
-function randomItem(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
-}
-function shuffle(arr){
-  for(let i=arr.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]] = [arr[j],arr[i]];
-  }
-  return arr;
-}
-</script>
+        // 產生背景漂浮粒子
+        const pContainer = document.getElementById('particle-container');
+        for (let i = 0; i < 15; i++) {
+            const p = document.createElement('div'); p.classList.add('particle');
+            p.style.width = p.style.height = `${Math.random()*6 + 4}px`;
+            p.style.left = `${Math.random()*100}%`; p.style.top = `${Math.random()*100}%`;
+            p.style.animationDelay = `${Math.random()*6}s`; p.style.animationDuration = `${Math.random()*4 + 5}s`;
+            pContainer.appendChild(p);
+        }
+    </script>
 </body>
 </html>
